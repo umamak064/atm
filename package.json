@@ -1,7 +1,7 @@
 {
-  "name": "@umamak064/atm",
+  "name": "@umamak064/countdown_timer",
   "version": "1.0.2",
-  "description": "This is a simple command-line ATM simulator built with Node.js and Inquirer.js.  it can be used as a base for more complex ATM simulations. ",
+  "description": "This is a simple countdown_timer built with Node.js and Inquirer.js.  it can be used as a base for more complex ATM simulations. ",
   "main": "index.js",
   "type": "module",
   "publishConfig": {
@@ -15,6 +15,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "date-fns": "^3.6.0",
     "inquirer": "^10.0.1"
   },
   "devDependencies": {

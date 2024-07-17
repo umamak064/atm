@@ -1,74 +1,42 @@
-#! /usr/bin/env node
+#!/usr/bin/env node
 
 import inquirer from "inquirer";
 
-let myBalance = 10000 ;  //dolars
-let myPin= 4321;
-
-let pinAnswer = await inquirer.prompt([
+import { differenceInSeconds } from "date-fns";
+ 
+const res = await inquirer.prompt([
     {
-        name:"pin",
-        type :"number",
-        message:"Enter your pin"
-    }
-]);
-
-if (pinAnswer.pin=== myPin){
-    console.log("correct pin number!");
-    let operationAns = await inquirer.prompt([
-        {
-            name:"operation",
-            message:"choose operation to perform",
-            type:"list",
-            choices: [ 
-                { name: "Withdraw", value: "withdraw" },
-                { name: "Fast Cash", value: "fast cash" },
-                { name: "Check Balance", value: "check balance" }
-            ]
-        }, 
-
-    ]);
-    console.log(operationAns);
-    if(operationAns.operation === "withdraw"){
-        let amountAns =await inquirer.prompt([
-            {
-                name :"amount",
-                type:"number",
-                message:"enter your amount"
+        name : "userinput",
+        type: "number",
+        message:"please enter the amount of seconds",
+        validate:(input: string | number | undefined)=>{
+            if (typeof input!== "number" || isNaN(input)){
+                return"please enter valid number"
+            }else if(input > 60){
+                return "seconds must be in 60s"
+            }else {
+                return true;
             }
-        ])
-        
-        if (amountAns.amount > myBalance) {
-            console.log("Insufficient balance. Please try again.");
-          } else {
-            console.log(`Your remaining balance is: ${myBalance -= amountAns.amount}`);
-          } 
-    }  
-
-    else if (operationAns.operation === "fast cash") {
-        let fastCashAns = await inquirer.prompt([
-          {
-            name: "fastCash",
-            message: "Choose fast cash amount",
-            type: "list",
-            choices: [
-              { name: "$00", value: 500 },
-              { name: "$1000", value: 1000 },
-              { name: "$1500", value: 1500 }
-            ]
-          }
-        ]);
-        if (fastCashAns.fastCash > myBalance) {
-          console.log("Insufficient balance. Please try again.");
-        } else {
-          console.log(`You withdrew ${fastCashAns.fastCash}. Your remaining balance is: ${myBalance -= fastCashAns.fastCash}`);
         }
     }
-    else if(operationAns.operation === "check balance"){
-        console.log("your balance is: " + myBalance);
-    }
+]);
+let input = res.userinput;
 
+function startTime(val:number){
+    const intTime =new Date() .setSeconds(new Date().getSeconds() + val);
+    const intervalTime= new Date(intTime)
+    setInterval((()=>{
+        const currentTime =new Date()
+        const timeDiff = differenceInSeconds(intervalTime, currentTime );
+
+        if(timeDiff<= 0){
+            console.log("timer has expired:")
+            process.exit()
+        }
+        const min =Math.floor((timeDiff % (3600*24))/3600)
+        const sec = Math.floor(timeDiff%60)
+        console.log(`${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}}`);
+        
+    }),1000)
 }
-else{
-    console.log("incorrect pin number");
-}
+startTime(input)
